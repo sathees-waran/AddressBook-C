@@ -120,9 +120,9 @@ void createContact(AddressBook *addressBook)
     int i, valid;
     int limit;
 
-    char name[30];
+    char name[50];
     char phone[20];
-    char mail[30];
+    char mail[50];
 
     getchar();
 
@@ -133,7 +133,7 @@ void createContact(AddressBook *addressBook)
     while (limit > 0)
     {
         printf("Enter name : ");
-        scanf("%[^\n]", name);
+        scanf("%49[^\n]", name);
 
         valid = 1;
 
@@ -174,7 +174,7 @@ void createContact(AddressBook *addressBook)
         printf("Invalid name\n");
 
         printf("Enter name : ");
-        scanf(" %[^\n]", name);
+        scanf(" %49[^\n]", name);
 
         limit--;
     }
@@ -191,7 +191,7 @@ void createContact(AddressBook *addressBook)
     while (limit > 0)
     {
         printf("Enter phone : ");
-        scanf(" %[^\n]", phone);
+        scanf(" %9[^\n]", phone);
 
         valid = 1;
 
@@ -232,7 +232,7 @@ void createContact(AddressBook *addressBook)
         printf("Invalid phone number\n");
 
         printf("Enter phone : ");
-        scanf(" %[^\n]", phone);
+        scanf(" %9[^\n]", phone);
 
         limit--;
     }
