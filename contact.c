@@ -72,7 +72,7 @@ int validate_phone(char phone[])
 /* Validates a basic e-mail address format */
 int validate_mail(char mail[])
 {
-    if (strchr(mail, '@') && strstr(mail, ".com"))
+    if (strchr(mail, '@') && strstr(mail, ".com") && (strchr(mail, ',') == NULL))
     {
         return 1;
     }
@@ -92,7 +92,7 @@ void initialize(AddressBook *addressBook)
         return;
     }
 
-    while (fscanf(fptr, " %49[^,],%19[^,],%49[^\n]",
+    while (addressBook->contactCount < MAX_CONTACTS && fscanf(fptr, " %49[^,],%19[^,],%49[^\n]",
                   addressBook->contacts[addressBook->contactCount].name,
                   addressBook->contacts[addressBook->contactCount].phone,
                   addressBook->contacts[addressBook->contactCount].email) == 3)
@@ -115,6 +115,7 @@ void listContacts(AddressBook *addressBook)
     }
 }
 /* creates and stores a new contact */
+
 void createContact(AddressBook *addressBook)
 {
     int i, valid;
@@ -123,6 +124,12 @@ void createContact(AddressBook *addressBook)
     char name[50];
     char phone[20];
     char mail[50];
+
+     if (addressBook->contactCount >= MAX_CONTACTS)
+    {
+        printf("Address book full\n");
+        return;
+    }
 
     getchar();
 
@@ -133,7 +140,7 @@ void createContact(AddressBook *addressBook)
     while (limit > 0)
     {
         printf("Enter name : ");
-        scanf("%49[^\n]", name);
+        scanf(" %49[^\n]", name);
 
         valid = 1;
 
@@ -191,7 +198,7 @@ void createContact(AddressBook *addressBook)
     while (limit > 0)
     {
         printf("Enter phone : ");
-        scanf(" %9[^\n]", phone);
+        scanf(" %19[^\n]", phone);
 
         valid = 1;
 
@@ -232,7 +239,7 @@ void createContact(AddressBook *addressBook)
         printf("Invalid phone number\n");
 
         printf("Enter phone : ");
-        scanf(" %9[^\n]", phone);
+        scanf(" %19[^\n]", phone);
 
         limit--;
     }
@@ -249,7 +256,7 @@ void createContact(AddressBook *addressBook)
     while (limit > 0)
     {
         printf("Enter mail : ");
-        scanf(" %[^\n]", mail);
+        scanf(" %49[^\n]", mail);
 
         valid = 1;
 
@@ -290,7 +297,7 @@ void createContact(AddressBook *addressBook)
         printf("Invalid mail\n");
 
         printf("Enter mail : ");
-        scanf(" %[^\n]", mail);
+        scanf(" %49[^\n]", mail);
         limit--;
     }
 
@@ -313,9 +320,9 @@ void createContact(AddressBook *addressBook)
 void searchContact(AddressBook *addressBook)
 {
     int op, i, printed;
-    char name[30];
+    char name[50];
     char phone[20];
-    char mail[30];
+    char mail[50];
 
     do
     {
@@ -334,7 +341,7 @@ void searchContact(AddressBook *addressBook)
         {
             printed = 0;
             printf("Enter name : ");
-            scanf(" %[^\n]", name);
+            scanf(" %49[^\n]", name);
 
             for (i = 0; i < addressBook->contactCount; i++)
             {
@@ -361,7 +368,7 @@ void searchContact(AddressBook *addressBook)
         {
             printed = 0;
             printf("Enter phone : ");
-            scanf(" %[^\n]", phone);
+            scanf(" %19[^\n]", phone);
             for (i = 0; i < addressBook->contactCount; i++)
             {
                 if (strstr(addressBook->contacts[i].phone, phone))
@@ -387,7 +394,7 @@ void searchContact(AddressBook *addressBook)
         {
             printed = 0;
             printf("Enter Mail-id : ");
-            scanf(" %[^\n]", mail);
+            scanf(" %49[^\n]", mail);
 
             for (i = 0; i < addressBook->contactCount; i++)
             {
@@ -420,9 +427,9 @@ void searchContact(AddressBook *addressBook)
 void editContact(AddressBook *addressBook)
 {
     int op, i, j, flag, valid;
-    char name[30];
+    char name[50];
     char phone[20];
-    char mail[30];
+    char mail[50];
 
     do
     {
@@ -441,7 +448,7 @@ void editContact(AddressBook *addressBook)
         {
             flag = 0;
             printf("Enter name : ");
-            scanf(" %[^\n]", name);
+            scanf(" %49[^\n]", name);
             for (i = 0; i < addressBook->contactCount; i++)
             {
                 if (strcasecmp(addressBook->contacts[i].name, name) == 0)
@@ -454,7 +461,7 @@ void editContact(AddressBook *addressBook)
             {
                 int org_index = i;
                 printf("Enter New name : ");
-                scanf(" %[^\n]", name);
+                scanf(" %49[^\n]", name);
                 valid = validate_name(name);
                 if (valid == 0)
                 {
@@ -486,7 +493,7 @@ void editContact(AddressBook *addressBook)
         {
             flag = 0;
             printf("Enter Number : ");
-            scanf(" %[^\n]", phone);
+            scanf(" %19[^\n]", phone);
             for (i = 0; i < addressBook->contactCount; i++)
             {
                 if (strcmp(addressBook->contacts[i].phone, phone) == 0)
@@ -499,7 +506,7 @@ void editContact(AddressBook *addressBook)
             {
                 int org_index = i;
                 printf("Enter New Number : ");
-                scanf(" %[^\n]", phone);
+                scanf(" %19[^\n]", phone);
                 valid = validate_phone(phone);
                 if (valid == 0)
                 {
@@ -530,7 +537,7 @@ void editContact(AddressBook *addressBook)
         {
             flag = 0;
             printf("Enter Mail-id : ");
-            scanf(" %[^\n]", mail);
+            scanf(" %49[^\n]", mail);
             for (i = 0; i < addressBook->contactCount; i++)
             {
                 if (strcasecmp(addressBook->contacts[i].email, mail) == 0)
@@ -543,7 +550,7 @@ void editContact(AddressBook *addressBook)
             {
                 int org_index = i;
                 printf("Enter New Mail-id : ");
-                scanf(" %[^\n]", mail);
+                scanf(" %49[^\n]", mail);
                 valid = validate_mail(mail);
                 if (valid == 0)
                 {
@@ -582,9 +589,9 @@ void editContact(AddressBook *addressBook)
 void deleteContact(AddressBook *addressBook)
 {
     int op, i, j, flag;
-    char name[30];
+    char name[50];
     char phone[20];
-    char mail[30];
+    char mail[50];
 
     do
     {
@@ -603,7 +610,7 @@ void deleteContact(AddressBook *addressBook)
         {
             flag = 0;
             printf("Enter name : ");
-            scanf(" %[^\n]", name);
+            scanf(" %49[^\n]", name);
             for (i = 0; i < addressBook->contactCount; i++)
             {
                 if (strcasecmp(addressBook->contacts[i].name, name) == 0)
@@ -614,7 +621,7 @@ void deleteContact(AddressBook *addressBook)
             }
             if (flag)
             {
-                for (j = i; j < addressBook->contactCount - 2; j++)
+                for (j = i; j < addressBook->contactCount - 1; j++)
                 {
                     addressBook->contacts[j] = addressBook->contacts[j + 1];
                 }
@@ -633,7 +640,7 @@ void deleteContact(AddressBook *addressBook)
         {
             flag = 0;
             printf("Enter phone : ");
-            scanf(" %[^\n]", phone);
+            scanf(" %19[^\n]", phone);
             for (i = 0; i < addressBook->contactCount; i++)
             {
                 if (strcasecmp(addressBook->contacts[i].phone, phone) == 0)
@@ -644,7 +651,7 @@ void deleteContact(AddressBook *addressBook)
             }
             if (flag)
             {
-                for (j = i; j < addressBook->contactCount - 2; j++)
+                for (j = i; j < addressBook->contactCount - 1; j++)
                 {
                     addressBook->contacts[j] = addressBook->contacts[j + 1];
                 }
@@ -663,7 +670,7 @@ void deleteContact(AddressBook *addressBook)
         {
             flag = 0;
             printf("Enter Mail-id : ");
-            scanf(" %[^\n]", mail);
+            scanf(" %49[^\n]", mail);
             for (i = 0; i < addressBook->contactCount; i++)
             {
                 if (strcasecmp(addressBook->contacts[i].email, mail) == 0)
@@ -674,7 +681,7 @@ void deleteContact(AddressBook *addressBook)
             }
             if (flag)
             {
-                for (j = i; j < addressBook->contactCount - 2; j++)
+                for (j = i; j < addressBook->contactCount - 1; j++)
                 {
                     addressBook->contacts[j] = addressBook->contacts[j + 1];
                 }

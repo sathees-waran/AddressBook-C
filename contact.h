@@ -17,6 +17,7 @@ typedef struct {
     char email[50];
 } Contact;
 
+
 //A fixed-capacity collection of Contact records.
 typedef struct {
     Contact contacts[MAX_CONTACTS];
